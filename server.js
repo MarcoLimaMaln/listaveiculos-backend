@@ -1,58 +1,48 @@
 const express = require('express');
-
+const database = require('./database');
+const cors = require('cors');
 const server = express();
 
+server.use(cors());
 server.use(express.json());
 
-const carros = [
-    {modelo: 'Gol', fabricante: 'Volkswagen', ano: 2000},
-    {modelo: 'Saveiro', fabricante: 'Volkswagen', ano: 2000}
-]
+server.get('/', async function(request, response) {
 
-server.get('/carro', function(request, response) {
-    response.json(carros);
+    const dados = await database.select();
+    return response.json(dados);
+});
+
+server.post('/', async function(request, response) {
+
+    const modelo = request.body.modelo;
+    const fabricante = request.body.fabricante;
+    const ano = request.body.ano;
+
+    const result = await database.insert(modelo, fabricante, ano);
+
+    return response.status(204).send()
 })
 
-server.post('/carro', function(request, response) {
-    //const modelo = request.body.modelo;
-    //const fabricante = request.body.fabricante;
-    //const ano = request.body.ano;
+server.put('/', async function(request, response) {
 
-    const {modelo, fabricante, ano} = request.body;
+    const id = request.body.id;
+    const modelo = request.body.modelo;
+    const fabricante = request.body.fabricante;
+    const ano = request.body.ano;
 
-    carros.push({modelo, fabricante, ano});
-    response.status(204).send();
+    const result = await database.update(idVaga, modelo, fabricante, ano);
+
+    return response.status(204).send()
 })
 
-server.put('/carro/:id', function(request, response){
+server.delete('/:id', async function(request, response) {
     
-    const { id } = request.params;
-    const {modelo, fabricante, ano} = request.body;
+    const id = request.params.id;
+    
+    const result = await database.delete(id);
 
-    for(let i = 0; i < carros.length; i++){
-        if(carros[i].modelo == id){
-            carros[i].modelo = modelo;
-            carros[i].fabricante = fabricante;
-            carros[i].ano = ano;
-            break;
-        }
-    }
-    return response.status(204).send();
+     return response.status(204).send()
 })
 
-server.delete('/carro/:id', function(request, response){
-    const {id} = request.params;
-    const {modelo, fabricante, ano} = request.body;
-
-
-    for (let i = 0; i < carros.lenght; i++){
-            if(carros[i].modelo == id){
-                carros.splice(i, 1);
-                break;
-            }
-        }
-
-    return response.status(204).send();
-})
 
 server.listen(process.env.PORT || 3000);
