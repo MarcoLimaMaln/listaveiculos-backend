@@ -30,7 +30,7 @@ module.exports = {
 
     async  insert(modelo, fabricante, ano){
 
-        const sql = `INSERT INTO carro (modelo, fabricante, ano)
+        const sql = `INSERT INTO carros (modelo, fabricante, ano)
                 VALUES ($1, $2, $3)`;
         
         const result = await pool.query(sql, [modelo, fabricante, ano]);
