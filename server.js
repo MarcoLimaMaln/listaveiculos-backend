@@ -30,7 +30,7 @@ server.put('/', async function(request, response) {
     const fabricante = request.body.fabricante;
     const ano = request.body.ano;
 
-    const result = await database.update(idVaga, modelo, fabricante, ano);
+    const result = await database.update(id, modelo, fabricante, ano);
 
     return response.status(204).send()
 })
